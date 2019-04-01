@@ -172,6 +172,21 @@ func NewSeleniumService(jarPath string, port int, opts ...ServiceOption) (*Servi
 	return s, nil
 }
 
+// NewIeDriverService ...
+func NewIeDriverService(path string, port int, opts ...ServiceOption) (*Service, error) {
+	cmd := exec.Command(path, "--port="+strconv.Itoa(port), "--log-level=TRACE", "--log-file=ie.log")
+	s, err := newService(cmd, "", port, opts...)
+
+	if err != nil {
+		return nil, err
+	}
+	s.shutdownURLPath = "/shutdown"
+	if err := s.start(port); err != nil {
+		return nil, err
+	}
+	return s, nil
+}
+
 // NewChromeDriverService starts a ChromeDriver instance in the background.
 func NewChromeDriverService(path string, port int, opts ...ServiceOption) (*Service, error) {
 	cmd := exec.Command(path, "--port="+strconv.Itoa(port), "--url-base=wd/hub", "--verbose")
@@ -257,6 +272,8 @@ func (s *Service) Stop() error {
 	} else {
 		resp, err := http.Get(s.addr + s.shutdownURLPath)
 		if err != nil {
+			s.cmd.Process.Kill()
+			s.cmd.Wait()
 			return err
 		}
 		resp.Body.Close()
