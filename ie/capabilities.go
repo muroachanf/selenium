@@ -12,6 +12,7 @@ const (
 	IgnorProtectedModeSettings = "ignoreProtectedModeSettings"
 	EnsureCleanSession         = "ie.ensureCleanSession"
 	IgnoreZoomLevel            = "ignoreZoomSetting"
+	ForceCreateProcessAPI      = "ie.forceCreateProcessApi"
 )
 
 // Capabilities ...

@@ -173,8 +173,9 @@ func NewSeleniumService(jarPath string, port int, opts ...ServiceOption) (*Servi
 }
 
 // NewIeDriverService ...
-func NewIeDriverService(path string, port int, opts ...ServiceOption) (*Service, error) {
-	cmd := exec.Command(path, "--port="+strconv.Itoa(port), "--log-level=TRACE", "--log-file=ie.log")
+func NewIeDriverService(path string, port int, args []string, opts ...ServiceOption) (*Service, error) {
+	args = append(args, "--port="+strconv.Itoa(port))
+	cmd := exec.Command(path, args...)
 	s, err := newService(cmd, "", port, opts...)
 
 	if err != nil {
